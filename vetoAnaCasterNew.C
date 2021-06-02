@@ -3,7 +3,7 @@
 // A simple TTreeReader adapted by DJT for MJD
 //
 // run as:
-// root vetoAna.C++
+// root vetoAnaCasterNew.C++
 //
 // ------------------------------------------------------------------
 //
@@ -11,6 +11,10 @@
 //Spring and Summer of 2019
 //Modified to detect certain patterns in panel firings, as well as act as a detector for multiplicity firings above a certain threshold
 //Has the ability to "cast" onto multiple data files and use that information to output for each file
+//
+//Modifying Author: Franklin Adams
+//Summer of 2021
+//
 
 #include "TROOT.h"
 #include "TFile.h"
@@ -32,7 +36,7 @@
 #include <ctime>
 #include <utility>
 
-#include "vetoAnaCaster.h"
+#include "vetoAnaCasterNew.h"
 
 #define HIGH_MULTIP_OUTPUT_LIST_NAME "high-multip-list.txt"
 #define HIGH_MULTIP_THRESHOLD 16
@@ -61,7 +65,7 @@ struct RunStats
   bool zeroScalerDuration; //If this should be a zero-duration event based on data
   int numEvents; //ANY event
   int fourPanelEvents; //4 panel events
-  
+
   bool operator< (const RunStats& other) const {return runDuration < other.runDuration;}
 };
 
@@ -79,8 +83,8 @@ struct RunSet
 
 SetData ana(RunSet runSet);
 
-const string rootFileFolder = "/Users/Shared/muon_cross_section/veto-skim/"; //Folder where many .root files can be found
-const string mDataFolder = "/Users/Shared/muon-reanalysis/muon-data";
+const string rootFileFolder = "/Users/franklinadams/muon_cross_section/veto-skim/"; //Folder where many .root files can be found
+const string mDataFolder = "/Users/franklinadams/muon-reanalysis/muon-data";
 const string QDC_AGGLOM_FILE_NAME = "qdc-agglom";
 const string RUN_TIMING_FILE_NAME = "run-timing.pdf";
 const string RUN_COMPARISON_FILE_NAME = "run-comparison.pdf";
@@ -93,7 +97,7 @@ const bool DO_QDC_AGGLOM = false; //Set to true if you want the program to agglo
 const bool DO_RUN_TIMING = false; //Set to true to graph run duration vs run number
 const bool DO_ZERO_RUN = false; //Set to true if you want to output the run numbers of 0 duration runs
 
-void vetoAnaCaster()
+void vetoAnaCasterNew()
 {
         //Clear the QDD agglom file
         TFile agglomFile((QDC_AGGLOM_FILE_NAME + ".root").c_str(), "RECREATE"); //Creates the file or clears the existing one
@@ -107,15 +111,15 @@ void vetoAnaCaster()
 
 	const RunSet targets[] = //All the files to execute this script on, including their directory and indentifier
 	{
-	  RunSet("P3JDY", "P3JDYNz", mDataFolder + "/P3JDY/skimVeto_P3JDYNz-skim-cut.root"),
-	  RunSet("P3KJR", "P3JKJRNz", mDataFolder + "/P3KJR/skimVeto_P3KJRNz-skim-cut.root"),
+	 // RunSet("P3JDY", "P3JDYNz", mDataFolder + "/P3JDY/skimVeto_P3JDYNz-skim-cut.root"),
+	 // RunSet("P3KJR", "P3JKJRNz", mDataFolder + "/P3KJR/skimVeto_P3KJRNz-skim-cut.root"),
 	  RunSet("P3LQKa", "P3LQKaNz", mDataFolder + "/P3LQKa/skimVeto_P3LQKaNz-skim-cut.root"),
-	  RunSet("P3LQK2", "P3LQK2Nz", mDataFolder + "/P3LQK2/skimVeto_P3LQK2Nz-skim-cut.root"),
-	  RunSet("P3LTP", "P3LTPNz", mDataFolder + "/P3LTP/skimVeto_P3LTPNz-skim-cut.root"),
-	  RunSet("P3LTP2", "P3LTP2Nz", mDataFolder + "/P3LTP2/skimVeto_P3LTP2Nz-skim-cut.root"),
-	  RunSet("P3LTP3", "P3LTP3Nz", mDataFolder + "/P3LTP3/skimVeto_P3LTP3Nz-skim-cut.root")
+	//  RunSet("P3LQK2", "P3LQK2Nz", mDataFolder + "/P3LQK2/skimVeto_P3LQK2Nz-skim-cut.root"),
+	 // RunSet("P3LTP", "P3LTPNz", mDataFolder + "/P3LTP/skimVeto_P3LTPNz-skim-cut.root"),
+	 // RunSet("P3LTP2", "P3LTP2Nz", mDataFolder + "/P3LTP2/skimVeto_P3LTP2Nz-skim-cut.root"),
+	//  RunSet("P3LTP3", "P3LTP3Nz", mDataFolder + "/P3LTP3/skimVeto_P3LTP3Nz-skim-cut.root")
 	};
-		
+
 	int numTargets = sizeof(targets) / sizeof(targets[0]);
 
 	//Aggregate data about the sets
@@ -140,10 +144,10 @@ void vetoAnaCaster()
 	  for (int i = 0; i < numTargets; i++)
 	  {
 	    runComparison->SetBinContent(i + 1, allData[i].getFourPanelRate());
-	    cout << "Bin " << i + 1 << " value: " << allData[i].getFourPanelRate() << endl; 
-	    cout << "Bin " << i + 1 << " 4P#: " << allData[i].fourPanelEvents << endl; 
+	    cout << "Bin " << i + 1 << " value: " << allData[i].getFourPanelRate() << endl;
+	    cout << "Bin " << i + 1 << " 4P#: " << allData[i].fourPanelEvents << endl;
 	    runComparison->SetBinError(i + 1, allData[i].getFourPanelRateErr());
-	    cout << "Bin " << i + 1 << " error: " << allData[i].getFourPanelRateErr() << endl; 
+	    cout << "Bin " << i + 1 << " error: " << allData[i].getFourPanelRateErr() << endl;
 	    runComparison->GetXaxis()->SetBinLabel(i + 1, allData[i].name.c_str());
 	  }
 	  runComparison->Draw("E");
@@ -187,14 +191,14 @@ SetData ana(RunSet runSet) {
 
         cout << "Start of ana() on " << runSet.extName << endl;
         vector<pair<int, int>> multipTable; //First valule is run #, second value is multiplicity
-	
+
 	//Set up collection for run duration vs run number
 	vector<RunStats> runStats = vector<RunStats>();
 
 	// set up execution timer
 	gBenchmark->Reset();
 	gBenchmark->Start("VetoAna");
-	
+
 	// Create histograms
 	static Int_t nqdc_bins=100;
 	static Float_t ll_qdc=0.;
@@ -234,7 +238,7 @@ SetData ana(RunSet runSet) {
    	TFile *myFile = TFile::Open(runSet.path.c_str());
    	//TFile *myFile = TFile::Open("/Users/Shared/muon-reanalysis/muon-data/P3JDY/skimVeto_P3JDY-skim-cut.root");
 	//^ Change input file here
-	
+
 	// The simulation-comparison file helps us compare a run with the simulation data
 	// A number of histograms will be stored in this file in order to be later graphable
 	//const string simCompFilePath = mDataFolder + "/" + runSet.baseName + "/" + runSet.extName + "-" + SIM_COMP_OUTPUT_FILE;
@@ -312,17 +316,17 @@ SetData ana(RunSet runSet) {
 	//RC:
 	//Class B = Any event
 	//Class C = Coin Type 1 events
-	//Class D = Coin Type 0 events 
+	//Class D = Coin Type 0 events
 
 	vector<int> highMultipRuns; //Contains all run numbers considered to be high multiplicity
 
-	const std::string DISPLAY_INPUT_PATH = "/Users/ranson/Documents/Veto_Display_Input/3_Panel_Special_Events_2.txt";
-	ofstream writer(DISPLAY_INPUT_PATH.c_str(), ios::out | ios::trunc); //Used to output collected data
-	
+	//const std::string DISPLAY_INPUT_PATH = "/Users/ranson/Documents/Veto_Display_Input/3_Panel_Special_Events_2.txt";
+	//ofstream writer(DISPLAY_INPUT_PATH.c_str(), ios::out | ios::trunc); //Used to output collected data
+
 	Int_t finalRun = 0; //Holds the final run number looped over
 	tm finalTimeValue; //Holds the last run time value for the data set
 	tm firstTimeValue; //Holds the first run time value for the data set
-	
+
 	while (reader.Next()) {
 		//cout << *fEntry << " " << *fRun << " " << *fCard1 << " " << *fCard2 << endl;
 		//cout << vetoEvent->fQDC[32]->size() << endl;
@@ -330,11 +334,11 @@ SetData ana(RunSet runSet) {
 		//	cout << CoinType[1] << " "<< CoinType[2] << " "<< CoinType[3] << " "<< CoinType[4] << endl;
 		//	cout << *run << " "<< *start << " " << *stop << " " << *unixDuration << " " << *scalerDuration << endl;
 		//}
-	  
+
 
 		// keep track of the time
 		if (*run != last_run){
-		        
+
 		        if (DO_ZERO_RUN && *scalerDuration == 0)
 			{
 			  setData.zeroDurationRuns.push_back(*run);
@@ -345,17 +349,17 @@ SetData ana(RunSet runSet) {
 			{
 			  //Add this run's duration and number to the graph data
 		          RunStats currStats;
-			  
+
 			  currStats.runDuration = *scalerDuration;
 			  currStats.zeroScalerDuration = (*scalerDuration == 0);
 			  currStats.runNumber = *run;
 			  runStats.push_back(currStats);
 			}
-			
+
 			total_run_time += *scalerDuration;
 			total_runs++;
 			last_run = *run;
-	           
+
                         finalRun = *run; //Updates every loop, so the final value is the final run
 
 			// check if current run is on same day as last_run
@@ -402,9 +406,9 @@ SetData ana(RunSet runSet) {
 
 		}
 		//^End of Time-If's
-		
 
-		
+
+
 	        if (firstRun == -1) //RC: Recording first run
 		{
 		  firstRun = *run; //Save the first run
@@ -421,7 +425,7 @@ SetData ana(RunSet runSet) {
 		if (CoinType[2]) hMultip2->Fill(*fMultip);
 		if (CoinType[3]) hMultip3->Fill(*fMultip);
 		if (CoinType[1] || CoinType[2] || CoinType[3]) hMultip4->Fill(*fMultip);
-		
+
 		if (DO_MULTIP_TABLE)
 		{
 		  //Add the run# and multiplicity value onto the table
@@ -469,7 +473,7 @@ SetData ana(RunSet runSet) {
 				    {
 				          //Assumed: fQDC is some sort of raw data for this even organized by panel index
 				          //Assumed: fSWThresh is some sort of threshold of current for an event (possibly specific to muons)
-				          int eventPanelNum = PanelMap(o, *run); 
+				          int eventPanelNum = PanelMap(o, *run);
 					  //^Returns the panel NUMBER for the panel where the threshhold was exceeded
 					  hitTracker.push_back(eventPanelNum); //Add this panel number to the list of hit panels
 				    }
@@ -478,22 +482,22 @@ SetData ana(RunSet runSet) {
 			      int numBotYHits = 0; //Ups for each bottom hit along y
 			      int numTopHits = 0; //Ups for each top hit
 			      unsigned int hitIndex = 0;
-			      for (unsigned int hitIndex = 0; hitIndex < hitTracker.size(); hitIndex++) 
+			      for (unsigned int hitIndex = 0; hitIndex < hitTracker.size(); hitIndex++)
 			      {
 				     //Check each of the assumed 3 hits
 				     for (int botIX = 0; botIX < numBotXPanels; botIX++) //Check each bottom panel to see if this event fired there
 				     {
-				           numBotXHits += (botXPanelNumbers[botIX] == hitTracker[hitIndex]) ? 1 : 0; 
+				           numBotXHits += (botXPanelNumbers[botIX] == hitTracker[hitIndex]) ? 1 : 0;
 				           //^Add 1 to bot hits x if that hit was in a bottom panel along the x
 				     }
 				     for (int botIY = 0; botIY < numBotYPanels; botIY++) //Check each bottom panel to see if this event fired there
 				     {
-				           numBotYHits += (botYPanelNumbers[botIY] == hitTracker[hitIndex]) ? 1 : 0; 
+				           numBotYHits += (botYPanelNumbers[botIY] == hitTracker[hitIndex]) ? 1 : 0;
 				           //^Add 1 to bot hits y if that hit was in a bottom panel along the y
 				     }
 				     for (int topI = 0; topI < numTopPanels; topI++) //Check each top panel to see if this event fired there
 				     {
-				           numTopHits += (topPanelNumbers[topI] == hitTracker[hitIndex]) ? 1 : 0; 
+				           numTopHits += (topPanelNumbers[topI] == hitTracker[hitIndex]) ? 1 : 0;
 				           //^Add 1 to top hits if that hit was in a top panel
 				     }
 			      }
@@ -526,7 +530,7 @@ SetData ana(RunSet runSet) {
 			      cout << "Detected a high multiplicity (>=" << HIGH_MULTIP_THRESHOLD << ") event in run: #" << *run << endl;
 			      //if (highMultipRuns.size() > 0 && highMultipRuns.back() != *run)
 			      //{
-			      //       highMultipRuns.push_back(*run); //Append that run number onto the vector		
+			      //       highMultipRuns.push_back(*run); //Append that run number onto the vector
 			      //}
 
 			      bool alreadyListed = false; //Assume this is the first time this run has been registered
@@ -544,20 +548,20 @@ SetData ana(RunSet runSet) {
 			      }
 			}
 		} //End of coinType 0's
-		
+
 		//End of RC:3-panel modifications
 		//RC: Determining the range of run numbers
 		//cout << "RC: Run Being Examined: " << *run << "; ";
-		
+
 		if ((CoinType[1]) && (*fMultip == 4)){      //two top and two bottom panels fired
-			
+
 		        if (DO_ZERO_RUN && *scalerDuration == 0)
 	                {
 			  setData.zeroDurationFourPanelRuns.push_back(*run);
 			  cout << "Event inside a 4-paen run with duration 0! Run #" << *run << endl;
 		        }
 
-	  
+
 		        hMultip5->Fill(*fMultip);
 			Int_t nPanel=0;
 			Int_t hitPanels[4];    // will eventually be larger...
@@ -584,7 +588,7 @@ SetData ana(RunSet runSet) {
 
 		}
 	} //END OF RUN LOOP
-	
+
 	cout << endl;
 	cout << "RC: Total 3-panel (1 top + 1 bot_x + 1 bot_y) events...(Class A): " << totalThreePanelEvents << endl; //RC
         cout << "RC: Total events.......................................(Class B): " << classBCount << endl; //RC
@@ -617,10 +621,10 @@ SetData ana(RunSet runSet) {
 	  TGraph* runGraph = new TGraph(runStats.size(), runNumbers, runDurations);
 	  runGraph->SetTitle("Run Number vs. Run Duration");
 	  runGraph->Draw("AC");
-	  
-	  //Sorting	  
+
+	  //Sorting
 	  sort(runStats.rbegin(), runStats.rend());
-	  
+
 	  cout << ">>> Longest-Duration Runs <<<" << endl;
 	  setData.maxRunDuration = runStats[0].runDuration; //Save the longest run
 	  for (int i = 0; i < 10; i++)
@@ -628,7 +632,7 @@ SetData ana(RunSet runSet) {
 	  cout << "<<< --------------------- >>>" << endl;
 
 	  sort(runStats.begin(), runStats.end());
-	  
+
 	  cout << ">>> Shortest-Duration Runs <<<" << endl;
 	  for (int i = 0; i < 10; i++)
 	    { cout << "Rank " << i+1 << ": " << (double)runStats[i].runDuration << "s; Run #" << runStats[i].runNumber << "; zeroScalerDuration? " << runStats[i].zeroScalerDuration << endl;}
@@ -650,7 +654,7 @@ SetData ana(RunSet runSet) {
 
 
 	}
-	
+
 	if (DO_HI_MULTIP_CUT)
 	{
 	  //Write high multiplicities list to file
@@ -702,7 +706,7 @@ SetData ana(RunSet runSet) {
 	cout << "MuonEff_4t_0= " << MuonEff_4t_0 << endl;
 	cout << "MuonEff_4t_1= " << MuonEff_4t_1 << endl;
 	cout << "MuonEff_4t_4= " << MuonEff_4t_4 << endl;
-	
+
 
 	//Agglomerate QDC graphs
 	if (DO_QDC_AGGLOM) //If agglomerating
@@ -725,7 +729,7 @@ SetData ana(RunSet runSet) {
 	    }
 
 	    //Independent of previous state...
-	    cout << "QDC test output from agglomerator: qdcAggloms[w=" << w << "] mean: " << qdcAggloms[w]->GetMean() << endl; 
+	    cout << "QDC test output from agglomerator: qdcAggloms[w=" << w << "] mean: " << qdcAggloms[w]->GetMean() << endl;
 	    qdcAggloms[w]->Write(); //Write back to file
 	    delete qdcAggloms[w];
 	  }
@@ -746,7 +750,7 @@ SetData ana(RunSet runSet) {
 	cout << "Data Set: " << runSet.extName << endl;
 	cout << "=========================================" << endl;
 	cout << "total_run_time (sec) = "  << total_run_time  << endl;
-	cout << "total nruns = " << total_runs << endl; 
+	cout << "total nruns = " << total_runs << endl;
 	cout << "total ndays = " << ndays << endl;
 	cout << "fourPanelHitsTOT = "  << FourPanelHitsTOT  << endl;
 	cout << "first run: " << firstRun  << endl;
@@ -755,7 +759,7 @@ SetData ana(RunSet runSet) {
 	cout << "end date: " << asctime(&finalTimeValue);
 	cout << "total events: " << classBCount << endl;
 	cout << "total hours: " << (total_run_time / 3600) << endl;
-	cout << "4-panel muons/second: " << FourPanelHitsTOT/total_run_time << endl; 
+	cout << "4-panel muons/second: " << FourPanelHitsTOT/total_run_time << endl;
 	cout << "4-panel %: " << ((double)FourPanelHitsTOT)/((double)classBCount) << endl;
 	cout << "=========================================" << endl;
 
@@ -764,7 +768,7 @@ SetData ana(RunSet runSet) {
 
 	ofstream outputfile;
 	outputfile.open(mDataFolder + "/" + runSet.baseName + "/" + runSet.extName + "-vetoAna_det" + SKIM_CUT_MODIFIER + ".txt");
-	cout << "Saving ..._det.txt" << endl; 
+	cout << "Saving ..._det.txt" << endl;
 
 	for (int j=1; j<145; j++) {
 		//cout << j << " " << FourPanelHits[j] << endl;
@@ -777,7 +781,7 @@ SetData ana(RunSet runSet) {
 
 	ofstream outputfile2;
 	outputfile2.open(mDataFolder + "/" + runSet.baseName + "/" + runSet.extName + "-vetoAna_day" + SKIM_CUT_MODIFIER + ".txt");
-	cout << "Saving ..._day.txt" << endl; 
+	cout << "Saving ..._day.txt" << endl;
 
 	for (int j=0; j<ndays; j++) {
 		//cout << daily_day[j] << " " << daily_mon[j] << " " << daily_year[j] << " " << daily_count[j] << " " << daily_Duration[j] << endl;
@@ -789,7 +793,7 @@ SetData ana(RunSet runSet) {
 //-----------------------------------------------------------------------------------------
 // create plots
 
-	
+
 	plotMultip((mDataFolder + "/" + runSet.baseName + "/" + runSet.extName + "-multip" + SKIM_CUT_MODIFIER).c_str());
 	plotQDCs((mDataFolder + "/" + runSet.baseName + "/" + runSet.extName + "-qdc" + SKIM_CUT_MODIFIER).c_str());
  	plotTimeHists();
@@ -804,7 +808,7 @@ SetData ana(RunSet runSet) {
 	////////
 
     gBenchmark->Show("VetoAna");
-    
+
     return setData;
 }
 

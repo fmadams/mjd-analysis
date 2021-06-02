@@ -1,0 +1,9 @@
+Path for input is hard-coded in line 86-87.
+rootFileFolder (line 86) never used. not duplicating for now
+Output hard-coded in line 88-91.
+Runs that are looked at are in "targets", starts at line 112
+"DISPLAY_INPUT_PATH" set to Ranson's directory at line 323.
+
+For temporary local use, running on only P3LQKa, P3LQKaNz.
+Move those to Users/franklinadams/muon_cross_section/veto-skim/
+and Users/franklinadams/muon-reanalysis/muon-data
