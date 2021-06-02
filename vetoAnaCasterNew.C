@@ -506,29 +506,29 @@ SetData ana(RunSet runSet) {
 				           //^Add 1 to top hits if that hit was in a top panel
 				     }
 			      }
-			      if (numBotXHits == 1 && numBotYHits == 1  && numTopHits == 1)
-			      {
-				     //This is a satisfactory event!
-				     totalThreePanelEvents++;
-				     //cout << "Panel count: " << hitTracker.size() << endl;
-				     //cout << "\tEvent run?: " << total_runs << endl;
-				     writer << *run << " "; //Add the relevant variable data to the file
-				     writer << *fEntry << " "; //Q: Really need to confirm this
-				     writer << 0  << " "; //Q: Is this the write order and variable?
-				     writer << *scalerDuration << " "; //Q: Scaler time vs scaler duration?
-				     for (int p = 0; p < 32; p++) //Go through each panel
-				     {
-				           if (fQDC[p] > fSWThresh[p]) //Cut ones below threshhold
-					   {
-					         writer << fQDC[p] << " "; //Add in QDC value
-					   }
-					   else
-					   {
-					         writer << "0 "; //Add 0 value
-					   }
-				     }
-				     writer << endl;
-     			      }
+			      // if (numBotXHits == 1 && numBotYHits == 1  && numTopHits == 1)
+			      // {
+				    //  //This is a satisfactory event!
+				    //  totalThreePanelEvents++;
+				    //  //cout << "Panel count: " << hitTracker.size() << endl;
+				    //  //cout << "\tEvent run?: " << total_runs << endl;
+				    //  writer << *run << " "; //Add the relevant variable data to the file
+				    //  writer << *fEntry << " "; //Q: Really need to confirm this
+				    //  writer << 0  << " "; //Q: Is this the write order and variable?
+				    //  writer << *scalerDuration << " "; //Q: Scaler time vs scaler duration?
+				    //  for (int p = 0; p < 32; p++) //Go through each panel
+				    //  {
+				    //        if (fQDC[p] > fSWThresh[p]) //Cut ones below threshhold
+					  //  {
+					  //        writer << fQDC[p] << " "; //Add in QDC value
+					  //  }
+					  //  else
+					  //  {
+					  //        writer << "0 "; //Add 0 value
+					  //  }
+				    //  }
+				    //  writer << endl;
+     			  //     }
 			}
 			if ((DO_HI_MULTIP_CUT) && (*fMultip >= HIGH_MULTIP_THRESHOLD)) //Events where at least N panels file
 			{
@@ -605,7 +605,7 @@ SetData ana(RunSet runSet) {
 	cout << "RC: Efficiency_3 (N_A/N_D): " << static_cast<double>(totalThreePanelEvents)/static_cast<double>(classDCount) << endl;
 	cout << "RC: First run number: " << firstRun << endl;
 	cout << "RC: Total Events where at least one panel meets the cut(Class E): " << totalCutCount << endl; //RC
-	writer.close(); //RC
+	//writer.close(); //RC
 
 	if (DO_RUN_TIMING)
 	{
