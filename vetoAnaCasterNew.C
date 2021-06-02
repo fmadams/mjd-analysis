@@ -600,7 +600,7 @@ SetData ana(RunSet runSet) {
 	cout << "RC: Efficiency_3 (N_A/N_D): " << static_cast<double>(totalThreePanelEvents)/static_cast<double>(classDCount) << endl;
 	cout << "RC: First run number: " << firstRun << endl;
 	cout << "RC: Total Events where at least one panel meets the cut(Class E): " << totalCutCount << endl; //RC
-	writer.close(); //RC
+	//writer.close(); //RC
 
 	if (DO_RUN_TIMING)
 	{
