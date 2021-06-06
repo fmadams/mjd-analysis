@@ -91,11 +91,11 @@ const string RUN_COMPARISON_FILE_NAME = "run-comparison.pdf";
 const string ZERO_RUN_OUTPUT_FILE = "zero-runs.txt";
 //const string SIM_COMP_OUTPUT_FILE = "sim-comp.root";
 
-const bool DO_HI_MULTIP_CUT = false; //Set to true if you want the program to cut high multiplicites into a high-multip-list
-const bool DO_MULTIP_TABLE = false; //Set to true if you want the program to output "run-number multip" into a table text file
-const bool DO_QDC_AGGLOM = false; //Set to true if you want the program to agglomerate all QDC data from each set into a saved .root file
-const bool DO_RUN_TIMING = false; //Set to true to graph run duration vs run number
-const bool DO_ZERO_RUN = false; //Set to true if you want to output the run numbers of 0 duration runs
+const bool DO_HI_MULTIP_CUT = true; //Set to true if you want the program to cut high multiplicites into a high-multip-list
+const bool DO_MULTIP_TABLE = true; //Set to true if you want the program to output "run-number multip" into a table text file
+const bool DO_QDC_AGGLOM = true; //Set to true if you want the program to agglomerate all QDC data from each set into a saved .root file
+const bool DO_RUN_TIMING = true; //Set to true to graph run duration vs run number
+const bool DO_ZERO_RUN = true; //Set to true if you want to output the run numbers of 0 duration runs
 
 void vetoAnaCasterNew()
 {
@@ -114,15 +114,15 @@ void vetoAnaCasterNew()
 	 // RunSet("P3JDY", "P3JDYNz", mDataFolder + "/P3JDY/skimVeto_P3JDYNz-skim-cut.root"),
 	 // RunSet("P3KJR", "P3JKJRNz", mDataFolder + "/P3KJR/skimVeto_P3KJRNz-skim-cut.root"),
 	 // RunSet("P3LQKa", "P3LQKaNz", mDataFolder + "/P3LQKa/skimVeto_P3LQKaNz-skim-cut.root"),
-	 RunSet("P3LQK2", "P3LQK2Nz", mDataFolder + "/P3LQK2/skimVeto_P3LQK2Nz-skim-cut.root"),
+	 // RunSet("P3LQK2", "P3LQK2Nz", mDataFolder + "/P3LQK2/skimVeto_P3LQK2Nz-skim-cut.root"),
 	 // RunSet("P3LTP", "P3LTPNz", mDataFolder + "/P3LTP/skimVeto_P3LTPNz-skim-cut.root"),
 	 // RunSet("P3LTP2", "P3LTP2Nz", mDataFolder + "/P3LTP2/skimVeto_P3LTP2Nz-skim-cut.root"),
 	 // RunSet("P3LTP3", "P3LTP3Nz", mDataFolder + "/P3LTP3/skimVeto_P3LTP3Nz-skim-cut.root"),
    // New Runs
    // RunSet("P3LTP4", "P3LTP4Nz", mDataFolder + "/P3LTP4/skimVeto_P3LTP4-skim-cut.root")
-   // RunSet("P3LTP5", "P3LTP5Nz", mDataFolder + "/P3LTP5/skimVeto_P3LTP5-skim-cut.root")
-   // RunSet("P3N991", "P3N991Nz", mDataFolder + "/P3N991/skimVeto_P3N991-skim-cut.root")
-   // RunSet("P3N992", "P3N992Nz", mDataFolder + "/P3N992/skimVeto_P3N992-skim-cut.root")
+   RunSet("P3LTP5", "P3LTP5Nz", mDataFolder + "/P3LTP5/skimVeto_P3LTP5.root")
+   RunSet("P3N991", "P3N991Nz", mDataFolder + "/P3N991/skimVeto_P3N991.root")
+   RunSet("P3N992", "P3N992Nz", mDataFolder + "/P3N992/skimVeto_P3N992.root")
 	};
 
 	int numTargets = sizeof(targets) / sizeof(targets[0]);
@@ -344,7 +344,7 @@ SetData ana(RunSet runSet) {
 		// keep track of the time
 		if (*run != last_run){
 
-		        if (DO_ZERO_RUN && *scalerDuration == 0)
+		        if (DO_ZERO_RUN && *scalerDuration == 0) // minimum run time to consider
 			{
 			  setData.zeroDurationRuns.push_back(*run);
 			  //cout << "Event inside a run with duration 0! Run #" << *run << endl;
@@ -563,7 +563,7 @@ SetData ana(RunSet runSet) {
 		        if (DO_ZERO_RUN && *scalerDuration == 0)
 	                {
 			  setData.zeroDurationFourPanelRuns.push_back(*run);
-			  cout << "Event inside a 4-paen run with duration 0! Run #" << *run << endl;
+			  cout << "Event inside a 4-panel run with duration 0! Run #" << *run << endl;
 		        }
 
 
