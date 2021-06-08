@@ -94,7 +94,7 @@ const string ZERO_RUN_OUTPUT_FILE = "zero-runs.txt";
 const bool DO_HI_MULTIP_CUT = false; //Set to true if you want the program to cut high multiplicites into a high-multip-list
 const bool DO_MULTIP_TABLE = false; //Set to true if you want the program to output "run-number multip" into a table text file
 const bool DO_QDC_AGGLOM = false; //Set to true if you want the program to agglomerate all QDC data from each set into a saved .root file
-const bool DO_RUN_TIMING = false; //Set to true to graph run duration vs run number
+const bool DO_RUN_TIMING = true; //Set to true to graph run duration vs run number
 const bool DO_ZERO_RUN = false; //Set to true if you want to output the run numbers of 0 duration runs
 
 void vetoAnaCasterNew()
@@ -279,7 +279,7 @@ SetData ana(RunSet runSet) {
 
 	//some useful vars
 	Int_t iDet=0;
-	Int_t FourPanelHits[145]={0};
+	Int_t FourPanelHits[145]={0};  //why 145?
 	Int_t FourPanelHitsTOT=0.;
 
 	Double_t total_run_time=0;
@@ -650,7 +650,7 @@ SetData ana(RunSet runSet) {
 	  TH1I* runDistrib = new TH1I("runDistrib", "Frequency of Run Durations", 30, 0, setData.maxRunDuration);
 	  for (int a = 0; a < runStats.size(); a++)
 	  {
-	    runDistrib->Fill(runNumbers[a]);
+	    runDistrib->Fill(runDurations[a]);
 	  }
 	  runDistrib->Draw();
 	  runCanvas->Print(("muon-data/" + runSet.baseName + "/" + runSet.extName + "-" + RUN_TIMING_FILE_NAME).c_str(), "pdf");
