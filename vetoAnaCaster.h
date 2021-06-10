@@ -1,7 +1,7 @@
 //
-// vetoAnaCasterNew.h
+// vetoAnaCaster.h
 //
-// used by vetoAnaCasterNew.C
+// used by vetoAnaCaster.C
 //
 //-------------------------------------------------------------------------------------------------------------------------
 // histogram operations

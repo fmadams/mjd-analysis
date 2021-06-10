@@ -3,7 +3,7 @@
 // A simple TTreeReader adapted by DJT for MJD
 //
 // run as:
-// root vetoAnaCasterNew.C++
+// root vetoAnaCaster.C++
 //
 // ------------------------------------------------------------------
 //
@@ -36,7 +36,7 @@
 #include <ctime>
 #include <utility>
 
-#include "vetoAnaCasterNew.h"
+#include "vetoAnaCaster.h"
 
 #define HIGH_MULTIP_OUTPUT_LIST_NAME "high-multip-list.txt"
 #define HIGH_MULTIP_THRESHOLD 16
@@ -83,21 +83,21 @@ struct RunSet
 
 SetData ana(RunSet runSet);
 
-const string rootFileFolder = "/Users/franklinadams/muon_cross_section/veto-skim/"; //Folder where many .root files can be found
-const string mDataFolder = "/Users/franklinadams/muon-reanalysis/muon-data";
+const string rootFileFolder = "/Users/Shared/muon_cross_section/veto-skim/"; //Folder where many .root files can be found
+const string mDataFolder = "/Users/Shared/muon-reanalysis/muon-data";
 const string QDC_AGGLOM_FILE_NAME = "qdc-agglom";
 const string RUN_TIMING_FILE_NAME = "run-timing.pdf";
 const string RUN_COMPARISON_FILE_NAME = "run-comparison.pdf";
 const string ZERO_RUN_OUTPUT_FILE = "zero-runs.txt";
 //const string SIM_COMP_OUTPUT_FILE = "sim-comp.root";
 
-const bool DO_HI_MULTIP_CUT = false; //Set to true if you want the program to cut high multiplicites into a high-multip-list
+const bool DO_HI_MULTIP_CUT = true; //Set to true if you want the program to cut high multiplicites into a high-multip-list
 const bool DO_MULTIP_TABLE = false; //Set to true if you want the program to output "run-number multip" into a table text file
 const bool DO_QDC_AGGLOM = false; //Set to true if you want the program to agglomerate all QDC data from each set into a saved .root file
 const bool DO_RUN_TIMING = true; //Set to true to graph run duration vs run number
-const bool DO_ZERO_RUN = false; //Set to true if you want to output the run numbers of 0 duration runs
+const bool DO_ZERO_RUN = true; //Set to true if you want to output the run numbers of 0 duration runs
 
-void vetoAnaCasterNew()
+void vetoAnaCaster()
 {
         //Clear the QDD agglom file
         TFile agglomFile((QDC_AGGLOM_FILE_NAME + ".root").c_str(), "RECREATE"); //Creates the file or clears the existing one
@@ -119,10 +119,12 @@ void vetoAnaCasterNew()
 	 // RunSet("P3LTP2", "P3LTP2Nz", mDataFolder + "/P3LTP2/skimVeto_P3LTP2Nz-skim-cut.root"),
 	 // RunSet("P3LTP3", "P3LTP3Nz", mDataFolder + "/P3LTP3/skimVeto_P3LTP3Nz-skim-cut.root"),
    // New Runs
-   // RunSet("P3LTP4", "P3LTP4Nz", mDataFolder + "/P3LTP4/skimVeto_P3LTP4.root"),
-   // RunSet("P3LTP5", "P3LTP5Nz", mDataFolder + "/P3LTP5/skimVeto_P3LTP5.root"),
-   // RunSet("P3N991", "P3N991Nz", mDataFolder + "/P3N991/skimVeto_P3N991.root"),
-   RunSet("P3N992", "P3N992Nz", mDataFolder + "/P3N992/skimVeto_P3N992.root"),
+   // RunSet("P3LTP4", "P3LTP4", mDataFolder + "/P3LTP4/skimVeto_P3LTP4.root"),
+   // RunSet("P3LTP5", "P3LTP5", mDataFolder + "/P3LTP5/skimVeto_P3LTP5.root"),
+   // RunSet("P3N991", "P3N991", mDataFolder + "/P3N991/skimVeto_P3N991.root"),
+   // RunSet("P3N992", "P3N992", mDataFolder + "/P3N992/skimVeto_P3N992.root"),
+   RunSet("P3NF3", "P3NF3", mDataFolder + "/P3NF3/skimVeto_P3NF3.root"),
+   RunSet("P3NF6", "P3NF6", mDataFolder + "/P3NF6/skimVeto_P3NF6.root"),
 	};
 
 	int numTargets = sizeof(targets) / sizeof(targets[0]);
@@ -652,7 +654,7 @@ SetData ana(RunSet runSet) {
 	  {
 	    runDistrib->Fill(runDurations[a]);
 	  }
-	  runDistrib->Draw();
+	  runDistrib->Draw(); // works after root exits the program, but not durring.  axis limit issue?
 	  runCanvas->Print(("muon-data/" + runSet.baseName + "/" + runSet.extName + "-" + RUN_TIMING_FILE_NAME).c_str(), "pdf");
 	  delete runGraph;
 	  delete runCanvas;
