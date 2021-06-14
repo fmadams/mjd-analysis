@@ -1,4 +1,4 @@
-//
+can1can1//
 // vetoAnaCaster.h
 //
 // used by vetoAnaCaster.C
@@ -67,7 +67,24 @@ void plotQDCs(string savePath)
 		// std::cout << "Call to save/print qdc" << std::endl;
 		// vcan1->Print(savePath.append(".pdf").c_str(),"pdf");
 		// vcan0->~TCanvas();
-	 //}
+
+    for(Int_t i=0; i<2; i++)  // 2 centerd in row 1
+    {
+      vcan1->cd(i+2);
+      hrqdc[i+17]->Draw();
+    }
+    for(Int_t i=0; i<2; i++)  // 2 centerd in row 2
+    {
+      vcan1->cd(i+6);
+      hrqdc[i+20]->Draw();
+    }
+    for(Int_t i=0; i<16; i++)  // bottom 4 rows
+    {
+      vcan1->cd(i+21);
+      hrqdc[i]->Draw(); // need panel # to add to i
+    }
+
+
 }
 
 void plotMultip(string savePath)
