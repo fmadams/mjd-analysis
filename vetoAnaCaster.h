@@ -42,16 +42,16 @@ void plotQDCs(string savePath)
     for(Int_t i=0; i<2; i++)  // 2 centerd in row 1
     {
       vcan0->cd(i+2);
-      hrqdc[i]->Draw();  // need panel # to add to i
+      hrqdc[i+17]->Draw();
     }
     for(Int_t i=0; i<2; i++)  // 2 centerd in row 2
     {
       vcan0->cd(i+6);
-      hrqdc[i]->Draw(); // need panel # to add to i
+      hrqdc[i+20]->Draw();
     }
     for(Int_t i=0; i<16; i++)  // bottom 4 rows
     {
-      vcan0->cd(i+17);
+      vcan0->cd(i+21);
       hrqdc[i]->Draw(); // need panel # to add to i
     }
 		TCanvas *vcan1 = new TCanvas("vcan1","thresh cut veto QDC",50,0,500,1000);
