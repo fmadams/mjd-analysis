@@ -124,7 +124,7 @@ void vetoAnaCaster()
    // RunSet("P3N991", "P3N991", mDataFolder + "/P3N991/skimVeto_P3N991.root"),
    // RunSet("P3N992", "P3N992", mDataFolder + "/P3N992/skimVeto_P3N992.root"),
    RunSet("P3NF3", "P3NF3", mDataFolder + "/P3NF3/skimVeto_P3NF3.root"),
-   RunSet("P3NF6", "P3NF6", mDataFolder + "/P3NF6/skimVeto_P3NF6.root"),
+   // RunSet("P3NF6", "P3NF6", mDataFolder + "/P3NF6/skimVeto_P3NF6.root"),
 	};
 
 	int numTargets = sizeof(targets) / sizeof(targets[0]);
