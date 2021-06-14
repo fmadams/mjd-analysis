@@ -75,7 +75,7 @@ void plotQDCs(string savePath)
       vcan1->cd(i+6);
       hcqdc[i+20]->Draw();
     }
-    for(Int_t i=0; i<16; i++)  // bottom 4 rows
+    for(Int_t i=0; i<12; i++)  // bottom 4 rows
     {
       vcan1->cd(i+21);
       hcqdc[i]->Draw(); // need panel # to add to i
