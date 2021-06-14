@@ -30,23 +30,43 @@ void plotQDCs(string savePath)
 	//{
   		TCanvas *vcan0 = new TCanvas("vcan0","raw veto QDC",0,0,500,1000);
 		vcan0->Divide(4,8,0,0);
-		for (Int_t i=0; i<32; i++)
-		{
-			vcan0->cd(i+1);
-			hrqdc[i]->Draw();
-		}
+    // Draw them in order of pannel
+		// for (Int_t i=0; i<32; i++)
+		// {
+		// 	vcan0->cd(i+1);
+		// 	hrqdc[i]->Draw();
+		// }
+
+    //Draw them in with 4 top centered on Top
+
+    for(Int_t i=0; i<2; i++)  // 2 centerd in row 1
+    {
+      vcan0->cd(i+2);
+      hrqdc[i]->Draw();  // need panel # to add to i
+    }
+    for(Int_t i=0; i<2; i++)  // 2 centerd in row 2
+    {
+      vcan0->cd(i+6);
+      hrqdc[i]->Draw(); // need panel # to add to i
+    }
+    for(Int_t i=0; i<16; i++)  // bottom 4 rows
+    {
+      vcan0->cd(i+17);
+      hrqdc[i]->Draw(); // need panel # to add to i
+    }
 		TCanvas *vcan1 = new TCanvas("vcan1","thresh cut veto QDC",50,0,500,1000);
 		gStyle->SetOptStat("e");
 		vcan1->UseCurrentStyle();
 		vcan1->Divide(4,8,0,0);
-		for (Int_t i=0; i<32; i++)
-		{
-			vcan1->cd(i+1);
-			hcqdc[i]->Draw();
-		}
-		std::cout << "Call to save/print qdc" << std::endl;
-		vcan1->Print(savePath.append(".pdf").c_str(),"pdf");
-		//vcan0->~TCanvas();
+    // Draw them in order of pannel
+		// for (Int_t i=0; i<32; i++)
+		// {
+		// 	vcan1->cd(i+1);
+		// 	hcqdc[i]->Draw();
+		// }
+		// std::cout << "Call to save/print qdc" << std::endl;
+		// vcan1->Print(savePath.append(".pdf").c_str(),"pdf");
+		// vcan0->~TCanvas();
 	 //}
 }
 
