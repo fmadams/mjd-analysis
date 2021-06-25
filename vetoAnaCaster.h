@@ -9,6 +9,7 @@
 // define histograms
 TH1F *hrqdc[32];    //raw
 TH1F *hcqdc[32];    //cut on thresh, overflow
+TH1F *hQTh[32];
 TH1F *hrun;
 TH1F *hMultip0;
 TH1F *hMultip1;
@@ -20,9 +21,88 @@ TH1D *hiDet;
 
 TH1F *ht1;
 #include <iostream>
+#include <Math/Vavilov.h>
 
 using namespace std;
 
+// without fitting
+// void plotQDCs(string savePath)
+// {
+//   	bool HistView = true;
+//   	//if (!(gROOT->IsBatch()) && HistView)
+// 	//{
+//   		TCanvas *vcan0 = new TCanvas("vcan0","raw veto QDC",0,0,500,1000);
+// 		vcan0->Divide(4,8,0,0);
+//     // Draw them in order of pannel
+// 		// for (Int_t i=0; i<32; i++)
+// 		// {
+// 		// 	vcan0->cd(i+1);
+// 		// 	hrqdc[i]->Draw();
+// 		// }
+//
+//     //Draw them in with 4 top centered on Top
+//
+//     for(Int_t i=0; i<2; i++)  // 2 centerd in row 1
+//     {
+//       vcan0->cd(i+2);
+//       hrqdc[i+17]->Draw();
+//     }
+//     for(Int_t i=0; i<2; i++)  // 2 centerd in row 2
+//     {
+//       vcan0->cd(i+6);
+//       hrqdc[i+20]->Draw();
+//     }
+//     for(Int_t i=0; i<16; i++)  // bottom 4 rows
+//     {
+//       vcan0->cd(i+21);
+//       hrqdc[i]->Draw(); // need panel # to add to i
+//     }
+// 		TCanvas *vcan1 = new TCanvas("vcan1","thresh cut veto QDC",50,0,500,1000);
+// 		gStyle->SetOptStat("e");
+// 		vcan1->UseCurrentStyle();
+// 		vcan1->Divide(4,8,0,0);
+//     // Draw them in order of pannel
+// 		// for (Int_t i=0; i<32; i++)
+// 		// {
+// 		// 	vcan1->cd(i+1);
+// 		// 	hcqdc[i]->Draw();
+// 		// }
+//
+//
+//     for(Int_t i=0; i<2; i++)  // 2 centerd in row 1
+//     {
+//       vcan1->cd(i+2);
+//       hcqdc[i+17]->Draw();
+//     }
+//     for(Int_t i=0; i<2; i++)  // 2 centerd in row 2
+//     {
+//       vcan1->cd(i+6);
+//       hcqdc[i+20]->Draw();
+//     }
+//     for(Int_t i=0; i<12; i++)
+//     {
+//       vcan1->cd(i+9);
+//       hcqdc[i]->Draw();
+//     }
+//     // for(Int_t i=0; i<12; i++)  // bottom 4 rows
+//     // {
+//     //   vcan1->cd(i+21);
+//     //   hcqdc[i]->Draw();
+//     // }
+//
+//     // Less white space
+//
+//     // vcan1->Divide(4,4,0,0);
+//
+//
+//     std::cout << "Call to save/print qdc" << std::endl;
+// 		vcan1->Print(savePath.append(".pdf").c_str(),"pdf");
+//     // vcan1->Print(savePath.append("_Fit.pdf").c_str(),"pdf");
+// 		vcan0->~TCanvas();
+//
+// }
+
+// fitting
 void plotQDCs(string savePath)
 {
   	bool HistView = true;
@@ -52,12 +132,13 @@ void plotQDCs(string savePath)
     for(Int_t i=0; i<16; i++)  // bottom 4 rows
     {
       vcan0->cd(i+21);
-      hrqdc[i]->Draw(); // need panel # to add to i
+      hrqdc[i]->Draw();
     }
-		TCanvas *vcan1 = new TCanvas("vcan1","thresh cut veto QDC",50,0,500,1000);
+		TCanvas *vcan1 = new TCanvas("vcan1","thresh cut veto QDC",50,0,500,625);
 		gStyle->SetOptStat("e");
+    gStyle->SetOptFit(1111);
 		vcan1->UseCurrentStyle();
-		vcan1->Divide(4,8,0,0);
+		vcan1->Divide(4,5,0,0);
     // Draw them in order of pannel
 		// for (Int_t i=0; i<32; i++)
 		// {
@@ -65,27 +146,33 @@ void plotQDCs(string savePath)
 		// 	hcqdc[i]->Draw();
 		// }
 
-    // rebin histograms
-    for(Int_t i=0; i<32; i++)
-    {
-      hcqdc[i]->Rebin(2);
-    }
-
 
     for(Int_t i=0; i<2; i++)  // 2 centerd in row 1
     {
       vcan1->cd(i+2);
+      hcqdc[i+17]->Fit("landau");
       hcqdc[i+17]->Draw();
+      hQTh[i+17]->SetLineColor(3);
+      hQTh[i+17]->Draw("SAME HIST");
+      vcan1->Update();
     }
     for(Int_t i=0; i<2; i++)  // 2 centerd in row 2
     {
       vcan1->cd(i+6);
+      hcqdc[i+20]->Fit("landau");
       hcqdc[i+20]->Draw();
+      hQTh[i+20]->SetLineColor(3);
+      hQTh[i+20]->Draw("SAME HIST");
+      vcan1->Update();
     }
     for(Int_t i=0; i<12; i++)
     {
       vcan1->cd(i+9);
+      hcqdc[i]->Fit("landau");
       hcqdc[i]->Draw();
+      hQTh[i]->SetLineColor(3);
+      hQTh[i]->Draw("SAME HIST");
+      vcan1->Update();
     }
     // for(Int_t i=0; i<12; i++)  // bottom 4 rows
     // {
@@ -99,10 +186,12 @@ void plotQDCs(string savePath)
 
 
     std::cout << "Call to save/print qdc" << std::endl;
-		vcan1->Print(savePath.append(".pdf").c_str(),"pdf");
+		vcan1->Print(savePath.append("_Thresh_Fit.pdf").c_str(),"pdf");
 		vcan0->~TCanvas();
 
 }
+
+
 
 void plotMultip(string savePath)
 {

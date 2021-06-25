@@ -14,7 +14,6 @@
 //
 //Modifying Author: Franklin Adams
 //Summer of 2021
-//
 
 #include "TROOT.h"
 #include "TFile.h"
@@ -91,11 +90,11 @@ const string RUN_COMPARISON_FILE_NAME = "run-comparison.pdf";
 const string ZERO_RUN_OUTPUT_FILE = "zero-runs.txt";
 //const string SIM_COMP_OUTPUT_FILE = "sim-comp.root";
 
-const bool DO_HI_MULTIP_CUT = true; //Set to true if you want the program to cut high multiplicites into a high-multip-list
+const bool DO_HI_MULTIP_CUT = false; //Set to true if you want the program to cut high multiplicites into a high-multip-list
 const bool DO_MULTIP_TABLE = false; //Set to true if you want the program to output "run-number multip" into a table text file
-const bool DO_QDC_AGGLOM = false; //Set to true if you want the program to agglomerate all QDC data from each set into a saved .root file
-const bool DO_RUN_TIMING = true; //Set to true to graph run duration vs run number
-const bool DO_ZERO_RUN = true; //Set to true if you want to output the run numbers of 0 duration runs
+const bool DO_QDC_AGGLOM = true; //Set to true if you want the program to agglomerate all QDC data from each set into a saved .root file
+const bool DO_RUN_TIMING = false; //Set to true to graph run duration vs run number
+const bool DO_ZERO_RUN = false; //Set to true if you want to output the run numbers of 0 duration runs
 
 void vetoAnaCaster()
 {
@@ -111,20 +110,19 @@ void vetoAnaCaster()
 
 	const RunSet targets[] = //All the files to execute this script on, including their directory and indentifier
 	{
-	 // RunSet("P3JDY", "P3JDYNz", mDataFolder + "/P3JDY/skimVeto_P3JDYNz-skim-cut.root"),
-	 // RunSet("P3KJR", "P3JKJRNz", mDataFolder + "/P3KJR/skimVeto_P3KJRNz-skim-cut.root"),
-	 // RunSet("P3LQKa", "P3LQKaNz", mDataFolder + "/P3LQKa/skimVeto_P3LQKaNz-skim-cut.root"),
-	 // RunSet("P3LQK2", "P3LQK2Nz", mDataFolder + "/P3LQK2/skimVeto_P3LQK2Nz-skim-cut.root"),
-	 // RunSet("P3LTP", "P3LTPNz", mDataFolder + "/P3LTP/skimVeto_P3LTPNz-skim-cut.root"),
-	 // RunSet("P3LTP2", "P3LTP2Nz", mDataFolder + "/P3LTP2/skimVeto_P3LTP2Nz-skim-cut.root"),
-	 // RunSet("P3LTP3", "P3LTP3Nz", mDataFolder + "/P3LTP3/skimVeto_P3LTP3Nz-skim-cut.root"),
-   // New Runs
-   // RunSet("P3LTP4", "P3LTP4", mDataFolder + "/P3LTP4/skimVeto_P3LTP4.root"),
-   // RunSet("P3LTP5", "P3LTP5", mDataFolder + "/P3LTP5/skimVeto_P3LTP5.root"),
-   // RunSet("P3N991", "P3N991", mDataFolder + "/P3N991/skimVeto_P3N991.root"),
-   // RunSet("P3N992", "P3N992", mDataFolder + "/P3N992/skimVeto_P3N992.root"),
-   RunSet("P3NF3", "P3NF3", mDataFolder + "/P3NF3/skimVeto_P3NF3.root"),
-   // RunSet("P3NF6", "P3NF6", mDataFolder + "/P3NF6/skimVeto_P3NF6.root"),
+     	  RunSet("P3JDY", "P3JDYNz", mDataFolder + "/P3JDY/skimVeto_P3JDYNz-skim-cut.root"),
+     	  RunSet("P3KJR", "P3JKJRNz", mDataFolder + "/P3KJR/skimVeto_P3KJRNz-skim-cut.root"),
+      	RunSet("P3LQKa", "P3LQKaNz", mDataFolder + "/P3LQKa/skimVeto_P3LQKaNz-skim-cut.root"),
+     	  RunSet("P3LQK2", "P3LQK2Nz", mDataFolder + "/P3LQK2/skimVeto_P3LQK2Nz-skim-cut.root"),
+      	RunSet("P3LTP", "P3LTPNz", mDataFolder + "/P3LTP/skimVeto_P3LTPNz-skim-cut.root"),
+      	RunSet("P3LTP2", "P3LTP2Nz", mDataFolder + "/P3LTP2/skimVeto_P3LTP2Nz-skim-cut.root"),
+    	  RunSet("P3LTP3", "P3LTP3Nz", mDataFolder + "/P3LTP3/skimVeto_P3LTP3Nz-skim-cut.root"),
+        RunSet("P3LTP4", "P3LTP4Nz", mDataFolder + "/P3LTP4/skimVeto_P3LTP4Nz.root"),
+    	  RunSet("P3LTP5", "P3LTP5Nz", mDataFolder + "/P3LTP5/skimVeto_P3LTP5Nz.root"),
+    	  RunSet("P3N991", "P3N991Nz", mDataFolder + "/P3N991/skimVeto_P3N991Nz.root"),
+    	  RunSet("P3N992", "P3N992Nz", mDataFolder + "/P3N992/skimVeto_P3N992Nz.root"),
+    	  RunSet("P3NF3", "P3NF3Nz", mDataFolder + "/P3NF3/skimVeto_P3NF3Nz.root"),
+    	  RunSet("P3NF6", "P3NF6Nz", mDataFolder + "/P3NF6/skimVeto_P3NF6Nz.root"),
 	};
 
 	int numTargets = sizeof(targets) / sizeof(targets[0]);
@@ -207,7 +205,7 @@ SetData ana(RunSet runSet) {
 	gBenchmark->Start("VetoAna");
 
 	// Create histograms
-	static Int_t nqdc_bins=100;
+	static Int_t nqdc_bins=80;
 	static Float_t ll_qdc=0.;
 	static Float_t ul_qdc=4200.;
 	Char_t hname[50];
@@ -218,7 +216,9 @@ SetData ana(RunSet runSet) {
 		hrqdc[i]->SetMarkerColor(3);
 		sprintf(hname,"hcqdc%d",i);
 		hcqdc[i]=new TH1F(hname,hname,nqdc_bins,ll_qdc,ul_qdc);
+    hQTh[i]=new TH1F(hname,hname,nqdc_bins,ll_qdc,ul_qdc);
 		hcqdc[i]->Sumw2();
+    hQTh[i]->Sumw2();
 	}
 
    	hrun = new TH1F("hrun", "run numbers", 1000, 0, 30000);
@@ -577,6 +577,10 @@ SetData ana(RunSet runSet) {
 				hrqdc[j]->Fill(fQDC[j]);
 				if (fQDC[j] >= fSWThresh[j]) {
 					hcqdc[j]->Fill(fQDC[j]);
+          //
+          hQTh[j]->Fill(fSWThresh[j]);
+          // Draw('s')
+          //
 					hitPanels[nPanel]=PanelMap(j,*run);
 					nPanel++;
 				}
@@ -716,7 +720,6 @@ SetData ana(RunSet runSet) {
 
 
 	//Agglomerate QDC graphs
-  //Check that this isn't adding to the agglom file every time the macro is run
 	if (DO_QDC_AGGLOM) //If agglomerating
 	{
 	  TFile file((QDC_AGGLOM_FILE_NAME + ".root").c_str(), "UPDATE"); //Open the accumulator file. UPDATE mode allows writing to file
